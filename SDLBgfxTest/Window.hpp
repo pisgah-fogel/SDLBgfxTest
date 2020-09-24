@@ -1,5 +1,6 @@
-#include <cassert>
+#pragma once
 
+#include <cassert>
 #include <SDL.h>
 
 // TODO : https://alexandre-laurent.developpez.com/tutoriels/sdl-2/creer-premieres-fenetres
