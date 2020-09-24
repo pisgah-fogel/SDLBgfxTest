@@ -8,6 +8,8 @@
 #include "SDLWrapper.hpp"
 #include "Window.hpp"
 
+#include "Cube.hpp"
+
 
 int main(int argc, char** argv)
 {
@@ -18,6 +20,15 @@ int main(int argc, char** argv)
         {
             return -1;
         }
+
+        // TODO: initialize the cube here
+        bgfx::VertexBufferHandle vbh;
+        bgfx::IndexBufferHandle ibh;
+        cube_vertexDeclaration(&vbh, &ibh);
+
+        bgfx::ShaderHandle vsh = loadShader("vs_cubes.bin");
+        bgfx::ShaderHandle fsh = loadShader("fs_cubes.bin");
+        bgfx::ProgramHandle program = bgfx::createProgram(vsh, fsh, true);
 
         int counter = 0;
 
@@ -50,8 +61,30 @@ int main(int argc, char** argv)
                 break;
             }
 
-            bgfx::touch(BgfxWrapper::kClearView);
+            //bgfx::touch(BgfxWrapper::kClearView);
+
+
+            const bx::Vec3 at = {0.0f, 0.0f,  0.0f};
+            const bx::Vec3 eye = {0.0f, 0.0f, -5.0f};
+            float view[16];
+            bx::mtxLookAt(view, eye, at);
+            float proj[16];
+            bx::mtxProj(proj, 60.0f, 800.f/600.f, 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
+            bgfx::setViewTransform(0, view, proj);
+
+            float mtx[16];
+            bx::mtxRotateXY(mtx, counter * 0.01f, counter * 0.01f);
+            bgfx::setTransform(mtx);        
+
+            bgfx::setVertexBuffer(0, vbh);
+            bgfx::setIndexBuffer(ibh);
+
+        //bgfx::touch(0); // draw an empty primitive
+
+            bgfx::submit(0, program);
+
 			bgfx::dbgTextClear();
+            bgfx::dbgTextPrintf(0, 1, 0x4f, "Counter:%d", counter++);
 			bgfx::frame();
         }
         window.Close();
@@ -59,7 +92,7 @@ int main(int argc, char** argv)
     
     SDLWrapper::Release();
 
-    std::cout<<"Exiting without sigfault"<<std::endl;
+    std::cout<<"No segfault, we are good !"<<std::endl;
 
 	return 0;
 }
