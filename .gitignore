@@ -251,3 +251,4 @@ ModelManifest.xml
 bgfx/geometryc
 bgfx/texturec
 .vscode/settings.json
+bgfx/Makefile
