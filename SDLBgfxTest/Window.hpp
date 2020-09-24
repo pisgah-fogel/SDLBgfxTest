@@ -25,20 +25,9 @@ public:
         Close();
     }
 
-    bool Create(const char* name, int width, int height, unsigned int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE)
-    {
-		mWindow = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
-        return mWindow != nullptr;
-    }
+    bool Create(const char* name, int width, int height, unsigned int flags = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
-    void Close()
-    {
-        if (mWindow != nullptr)
-		{
-			SDL_DestroyWindow(mWindow);
-            mWindow = nullptr;
-        }
-    }
+    void Close();
 
     bool IsOpen() const
     {
@@ -151,6 +140,7 @@ public:
     }
 
     SDL_Window* getSDLWindow() {
+        assert (mWindow != nullptr);
         return mWindow;
     }
 

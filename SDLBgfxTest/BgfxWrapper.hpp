@@ -1,13 +1,37 @@
 #pragma once
 
+// Assigning video driver to this platform (ie compiler's defines)
+// Use 'gcc -dM -E - <NUL:' or 'gcc -dM -E - </dev/null' to check what is your current defines
+#if unix || __unix || __unix__ || __linux__ || linux || __linux || __FreeBSD__
+	#define SDL_VIDEO_DRIVER_X11
+    #define SDL_VIDEO_DRIVER_WAYLAND
+#elif __APPLE__ || __MACH__
+    #define SDL_VIDEO_DRIVER_COCOA
+    #define SDL_VIDEO_DRIVER_UIKIT
+#elif _WIN32 || _WIN64 
+	#define SDL_VIDEO_DRIVER_WINDOWS
+    #define SDL_VIDEO_DRIVER_WINRT
+#elif __ANDROID__
+    #define SDL_VIDEO_DRIVER_ANDROID
+#endif
+
+// I don't know which system implements those, Uncomment to use them (You'll get error if you don't have the driver's library)
+//#define SDL_VIDEO_DRIVER_DIRECTFB
+#define SDL_VIDEO_DRIVER_MIR
+#define SDL_VIDEO_DRIVER_VIVANTE
+
 #include <cassert>
 #include <iostream>
+
+#include <bgfx/bgfx.h>
+#include <bgfx/platform.h>
+
+#include "Window.hpp"
 
 #include <SDL.h>
 #include <SDL_syswm.h>
 
-#include <bgfx/bgfx.h>
-#include <bgfx/platform.h>
+using namespace my;
 
 class BgfxWrapper
 {
@@ -15,13 +39,13 @@ public:
 	static constexpr bgfx::ViewId kClearView = 0;
     static constexpr unsigned int kClearColor = 0x443355FF;
 
-	static bool Init(my::Window& window)
+	static bool Init(my::Window* window)
 	{
         assert(!GetInstance().mInitialized);
 
 		SDL_SysWMinfo wmi;
 		SDL_VERSION(&wmi.version);
-		if (!SDL_GetWindowWMInfo(window.getSDLWindow(), &wmi))
+		if (!SDL_GetWindowWMInfo(window->getSDLWindow(), &wmi))
 		{
 			return false;
 		}
@@ -114,15 +138,15 @@ public:
 
 		bgfx::Init init;
 		init.type = bgfx::RendererType::Count; // Automatically choose a renderer
-		init.resolution.width = window.GetWidth();
-		init.resolution.height = window.GetHeight();
+		init.resolution.width = window->GetWidth();
+		init.resolution.height = window->GetHeight();
 		init.resolution.reset = BGFX_RESET_VSYNC;
 		bgfx::init(init);
 
 		bgfx::setDebug(BGFX_DEBUG_TEXT | BGFX_DEBUG_STATS);
 
 		bgfx::setViewClear(kClearView, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, kClearColor, 1.0f, 0);
-		bgfx::setViewRect(kClearView, 0, 0, static_cast<uint16_t>(window.GetWidth()), static_cast<uint16_t>(window.GetHeight()));
+		bgfx::setViewRect(kClearView, 0, 0, static_cast<uint16_t>(window->GetWidth()), static_cast<uint16_t>(window->GetHeight()));
 
         GetInstance().mInitialized = true;
         return true;
