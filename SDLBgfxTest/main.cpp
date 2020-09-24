@@ -9,6 +9,7 @@
 #include "Window.hpp"
 
 #include "Cube.hpp"
+#include "Sprite.hpp"
 
 
 int main(int argc, char** argv)
@@ -22,6 +23,7 @@ int main(int argc, char** argv)
         }
 
         Cube test_cube;
+        Sprite test_sprite;
 
         int counter = 0;
 
@@ -57,7 +59,8 @@ int main(int argc, char** argv)
             //bgfx::touch(BgfxWrapper::kClearView);
 
 
-            test_cube.render();
+            //test_cube.render();
+            test_sprite.render();
 
 			bgfx::dbgTextClear();
             bgfx::dbgTextPrintf(0, 1, 0x4f, "Counter:%d", counter++);
