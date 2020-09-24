@@ -3,6 +3,7 @@
 #include <SDL.h>
 
 // TODO : https://alexandre-laurent.developpez.com/tutoriels/sdl-2/creer-premieres-fenetres
+namespace my {
 
 class Window
 {
@@ -148,8 +149,14 @@ public:
         return (mWindow != nullptr) ? SDL_GetWindowFlags(mWindow) : 0; 
     }
 
+    SDL_Window* getSDLWindow() {
+        return mWindow;
+    }
+
 private:
     friend class Bgfx;
 
     SDL_Window* mWindow;
 };
+
+}
