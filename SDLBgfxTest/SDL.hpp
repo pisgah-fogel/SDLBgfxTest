@@ -21,6 +21,7 @@ public:
 		}
 		else
 		{
+			std::cout<<"SDL::Init: Error: SDL_Init returned False"<<std::endl;
 			sdl.mInitFlags = 0;
 			return false;
 		}
@@ -68,11 +69,12 @@ private:
 		: mInitialized(false)
 		, mInitFlags(0)
 	{
+		std::cout<<"SDL::SDL: New instance created"<<std::endl;
 	}
 
 	~SDL()
 	{
-		assert(!mInitialized);
+		// Cleanup must already be done in SDL::Release()
 	}
 
 	static SDL& GetInstance()
