@@ -66,63 +66,70 @@ public:
                 pd.ndt = NULL;
                 pd.nwh = wmi.info.win.window;
             break;
-#elif defined(SDL_VIDEO_DRIVER_WINRT)
+#endif
+#if defined(SDL_VIDEO_DRIVER_WINRT)
             case SDL_SYSWM_WINRT:
                 std::cout<<"Platform: WINDOWS RT"<<std::endl;
                 pd.ndt = NULL;
                 pd.nwh = wmi.info.winrt.window;
             break;
-#elif defined(SDL_VIDEO_DRIVER_X11)
+#endif
+#if defined(SDL_VIDEO_DRIVER_X11)
             case SDL_SYSWM_X11:
                 std::cout<<"Platform: X11"<<std::endl;
                 pd.ndt = wmi.info.x11.display;
                 pd.nwh = (void*)(uintptr_t)wmi.info.x11.window;
             break;
-#elif defined(SDL_VIDEO_DRIVER_DIRECTFB)
+#endif
+#if defined(SDL_VIDEO_DRIVER_DIRECTFB)
             case SDL_SYSWM_DIRECTFB:
                 std::cout<<"Platform: DIRECTFB"<<std::endl;
                 pd.ndt = NULL;
                 pd.nwh = wmi.info.dfb.window;
             break;
-#elif defined(SDL_VIDEO_DRIVER_COCOA) // OSX
+#endif
+#if defined(SDL_VIDEO_DRIVER_COCOA) // OSX
             case SDL_SYSWM_COCOA:
                 std::cout<<"Platform: COCOA (OSX)"<<std::endl;
                 pd.ndt = NULL;
                 pd.nwh = wmi.info.cocoa.window;
             break;
-#elif defined(SDL_VIDEO_DRIVER_UIKIT) // iOS
+#endif
+#if defined(SDL_VIDEO_DRIVER_UIKIT) // iOS
             case SDL_SYSWM_UIKIT:
                 std::cout<<"Platform: UIKIT (iOS)"<<std::endl;
                 pd.ndt = NULL;
                 pd.nwh = wmi.info.uikit.window;
             break;
-#elif defined(SDL_VIDEO_DRIVER_WAYLAND)
+#endif
+#if defined(SDL_VIDEO_DRIVER_WAYLAND)
             case SDL_SYSWM_WAYLAND:
                 std::cout<<"Platform: WAYLAND"<<std::endl;
                 pd.ndt = NULL; // Not tested
                 pd.nwh = (void*)(uintptr_t)wmi.info.wl.display;
             break;
-#elif defined(SDL_VIDEO_DRIVER_MIR)  /* no longer available, left for API/ABI compatibility. Remove in 2.1! */
+#endif
+#if defined(SDL_VIDEO_DRIVER_MIR)  /* no longer available, left for API/ABI compatibility. Remove in 2.1! */
             case SDL_SYSWM_MIR:
                 std::cout<<"Platform: MIR"<<std::endl;
                 pd.ndt = NULL;
                 pd.nwh = NULL;
             break;
-#elif defined(SDL_VIDEO_DRIVER_ANDROID)
+#endif
+#if defined(SDL_VIDEO_DRIVER_ANDROID)
             case SDL_SYSWM_ANDROID:
                 std::cout<<"Platform: ANDROID"<<std::endl;
                 pd.ndt = NULL;
                 pd.nwh = wmi.info.android.window;
             break;
-#elif defined(SDL_VIDEO_DRIVER_VIVANTE) // STEAMLINK
+#endif
+#if defined(SDL_VIDEO_DRIVER_VIVANTE) // STEAMLINK
             case SDL_SYSWM_VIVANTE:
                 std::cout<<"Platform: VIVANTE (Steamlink)"<<std::endl;
                 pd.ndt = wmi.info.vivante.display;
-                pd.nwh = wmi.info.vivante.window;
+                pd.nwh = (void*)(uintptr_t)wmi.info.vivante.window;
             break;
-#else
-            #error No video driver assigned to this platform (ie Compiler s defines)
-#endif      
+#endif  
             default:
                 std::cout<<"No video driver found (During runtime)"<<std::endl;
                 std::cout<<"Detected system window manager: "<< wmi.subsystem <<std::endl;
