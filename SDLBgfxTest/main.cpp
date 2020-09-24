@@ -1,9 +1,9 @@
 
-// Use compiler defines to choose which driver to compile for
-// Use 'gcc -dM -E - <NUL:' or 'gcc -dM -E - </dev/null' to check what is your platform's defines
+// Assigning video driver to this platform (ie compiler's defines)
+// Use 'gcc -dM -E - <NUL:' or 'gcc -dM -E - </dev/null' to check what is your current defines
 #if unix || __unix || __unix__ || __linux__ || linux || __linux || __FreeBSD__
 	#define SDL_VIDEO_DRIVER_X11
-    //#define SDL_VIDEO_DRIVER_WAYLAND
+    #define SDL_VIDEO_DRIVER_WAYLAND
 #elif __APPLE__ || __MACH__
     #define SDL_VIDEO_DRIVER_COCOA
     #define SDL_VIDEO_DRIVER_UIKIT
@@ -12,7 +12,12 @@
     #define SDL_VIDEO_DRIVER_WINRT
 #elif __ANDROID__
     #define SDL_VIDEO_DRIVER_ANDROID
-#endif // TODO: add SDL_VIDEO_DRIVER_VIVANTE
+#endif
+
+// I don't know which system implements those, Uncomment to use them (You'll get error if you don't have the driver's library)
+//#define SDL_VIDEO_DRIVER_DIRECTFB
+#define SDL_VIDEO_DRIVER_MIR
+#define SDL_VIDEO_DRIVER_VIVANTE
 
 #include <cassert>
 #include <iostream>
@@ -45,53 +50,82 @@ public:
 
 		bgfx::PlatformData pd;
 
-
+        // Runtime selection of the driver to use (available driver are set according to the target's platform ie compiler's defines)
+        switch (wmi.subsystem) {
+            case SDL_SYSWM_UNKNOWN:
+                std::cout<<"Platform: Unknown"<<std::endl;
+                std::cout<<"Warning: SDL could not detect your platform, the program may crash"<<std::endl;
+                pd.ndt = NULL;
+                pd.nwh = NULL;
+            break;
 #if defined(SDL_VIDEO_DRIVER_WINDOWS)
-        std::cout<<"Platform: WINDOWS"<<std::endl;
-        pd.ndt = NULL;
-		pd.nwh = wmi.info.win.window;
+            case SDL_SYSWM_WINDOWS:
+                std::cout<<"Platform: WINDOWS"<<std::endl;
+                pd.ndt = NULL;
+                pd.nwh = wmi.info.win.window;
+            break;
 #elif defined(SDL_VIDEO_DRIVER_WINRT)
-        std::cout<<"Platform: WINDOWS RT"<<std::endl;
-        pd.ndt = NULL;
-		pd.nwh = wmi.info.winrt.window;
+            case SDL_SYSWM_WINRT:
+                std::cout<<"Platform: WINDOWS RT"<<std::endl;
+                pd.ndt = NULL;
+                pd.nwh = wmi.info.winrt.window;
+            break;
 #elif defined(SDL_VIDEO_DRIVER_X11)
-        std::cout<<"Platform: X11"<<std::endl;
-        pd.ndt = wmi.info.x11.display;
-		pd.nwh = (void*)(uintptr_t)wmi.info.x11.window;
+            case SDL_SYSWM_X11:
+                std::cout<<"Platform: X11"<<std::endl;
+                pd.ndt = wmi.info.x11.display;
+                pd.nwh = (void*)(uintptr_t)wmi.info.x11.window;
+            break;
 #elif defined(SDL_VIDEO_DRIVER_DIRECTFB)
-        std::cout<<"Platform: DIRECTFB"<<std::endl;
-        pd.ndt = NULL;
-		pd.nwh = wmi.info.dfb.window;
+            case SDL_SYSWM_DIRECTFB:
+                std::cout<<"Platform: DIRECTFB"<<std::endl;
+                pd.ndt = NULL;
+                pd.nwh = wmi.info.dfb.window;
+            break;
 #elif defined(SDL_VIDEO_DRIVER_COCOA) // OSX
-        std::cout<<"Platform: COCOA (OSX)"<<std::endl;
-        pd.ndt = NULL;
-		pd.nwh = wmi.info.cocoa.window;
+            case SDL_SYSWM_COCOA:
+                std::cout<<"Platform: COCOA (OSX)"<<std::endl;
+                pd.ndt = NULL;
+                pd.nwh = wmi.info.cocoa.window;
+            break;
 #elif defined(SDL_VIDEO_DRIVER_UIKIT) // iOS
-        std::cout<<"Platform: UIKIT (iOS)"<<std::endl;
-        pd.ndt = NULL;
-		pd.nwh = wmi.info.uikit.window;
+            case SDL_SYSWM_UIKIT:
+                std::cout<<"Platform: UIKIT (iOS)"<<std::endl;
+                pd.ndt = NULL;
+                pd.nwh = wmi.info.uikit.window;
+            break;
 #elif defined(SDL_VIDEO_DRIVER_WAYLAND)
-        std::cout<<"Platform: WAYLAND"<<std::endl;
-        pd.ndt = NULL; // Not tested
-		pd.nwh = (void*)(uintptr_t)wmi.info.wl.display;
+            case SDL_SYSWM_WAYLAND:
+                std::cout<<"Platform: WAYLAND"<<std::endl;
+                pd.ndt = NULL; // Not tested
+                pd.nwh = (void*)(uintptr_t)wmi.info.wl.display;
+            break;
 #elif defined(SDL_VIDEO_DRIVER_MIR)  /* no longer available, left for API/ABI compatibility. Remove in 2.1! */
-        std::cout<<"Platform: MIR"<<std::endl;
-        pd.ndt = NULL;
-		pd.nwh = NULL;
+            case SDL_SYSWM_MIR:
+                std::cout<<"Platform: MIR"<<std::endl;
+                pd.ndt = NULL;
+                pd.nwh = NULL;
+            break;
 #elif defined(SDL_VIDEO_DRIVER_ANDROID)
-        std::cout<<"Platform: ANDROID"<<std::endl;
-        pd.ndt = NULL;
-		pd.nwh = wmi.info.android.window;
+            case SDL_SYSWM_ANDROID:
+                std::cout<<"Platform: ANDROID"<<std::endl;
+                pd.ndt = NULL;
+                pd.nwh = wmi.info.android.window;
+            break;
 #elif defined(SDL_VIDEO_DRIVER_VIVANTE) // STEAMLINK
-        std::cout<<"Platform: VIVANTE (Steamlink)"<<std::endl;
-        pd.ndt = wmi.info.vivante.display;
-		pd.nwh = wmi.info.vivante.window;
+            case SDL_SYSWM_VIVANTE:
+                std::cout<<"Platform: VIVANTE (Steamlink)"<<std::endl;
+                pd.ndt = wmi.info.vivante.display;
+                pd.nwh = wmi.info.vivante.window;
+            break;
 #else
-        //#error No video driver found
-        std::cout<<"No video driver found"<<std::endl;
-        std::cout<<"Detected system window manager: "<< wmi.subsystem <<std::endl;
-        exit(1);
-#endif
+            #error No video driver assigned to this platform (ie Compiler s defines)
+#endif      
+            default:
+                std::cout<<"No video driver found (During runtime)"<<std::endl;
+                std::cout<<"Detected system window manager: "<< wmi.subsystem <<std::endl;
+                exit(1);
+        }
 
 		pd.context = NULL;
 		pd.backBuffer = NULL;
@@ -162,7 +196,9 @@ int main(int argc, char** argv)
         Bgfx::Init(window);
 
         int counter = 0;
-        while (window.IsOpen())
+
+        bool looping = true;
+        while (looping)
         {
             SDL_Event event;
             while (SDL::PollEvent(event))
@@ -171,7 +207,7 @@ int main(int argc, char** argv)
                 {
 				case SDL_QUIT:
 				{
-					window.Close();
+                    looping = false;
 					break;
 				}
                 case SDL_WINDOWEVENT: 
@@ -179,7 +215,7 @@ int main(int argc, char** argv)
                     switch (event.window.event) 
                     {
                     case SDL_WINDOWEVENT_CLOSE:
-                        window.Close();
+                        looping = false;
                         break;
                     }
                 } break;
@@ -196,7 +232,13 @@ int main(int argc, char** argv)
         }
 
         Bgfx::Release();
+        if (window.IsOpen())
+            window.Close();
     }
+    
     SDL::Release();
+
+    std::cout<<"Exiting without sigfault"<<std::endl;
+
 	return 0;
 }

@@ -69,12 +69,11 @@ private:
 		: mInitialized(false)
 		, mInitFlags(0)
 	{
-		std::cout<<"SDL::SDL: New instance created"<<std::endl;
 	}
 
 	~SDL()
 	{
-		// Cleanup must already be done in SDL::Release()
+		assert(!mInitialized);
 	}
 
 	static SDL& GetInstance()

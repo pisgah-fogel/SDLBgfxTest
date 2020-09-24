@@ -252,3 +252,5 @@ bgfx/geometryc
 bgfx/texturec
 .vscode/settings.json
 bgfx/Makefile
+.vscode/launch.json
+.vscode/tasks.json
