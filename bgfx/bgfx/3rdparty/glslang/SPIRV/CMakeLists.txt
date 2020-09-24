@@ -47,6 +47,7 @@ set(SPVREMAP_SOURCES
     doc.cpp)
 
 set(HEADERS
+    ../build_info.h
     bitutils.h
     spirv.hpp
     GLSL.std.450.h
