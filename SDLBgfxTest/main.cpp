@@ -28,13 +28,13 @@
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 
-#include "SDL.hpp"
+#include "SDLWrapper.hpp"
 #include "Window.hpp"
 #include "BgfxWrapper.hpp"
 
 int main(int argc, char** argv)
 {
-    SDL::Init();
+    SDLWrapper::Init();
     {
         my::Window window;
         if (!window.Create("SDL & bgfx", 800, 600))
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
         while (looping)
         {
             SDL_Event event;
-            while (SDL::PollEvent(event))
+            while (SDLWrapper::PollEvent(event))
             {
                 switch (event.type)
                 {
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
         window.Close();
     }
     
-    SDL::Release();
+    SDLWrapper::Release();
 
     std::cout<<"Exiting without sigfault"<<std::endl;
 

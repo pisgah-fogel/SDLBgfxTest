@@ -9,9 +9,6 @@
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 
-#include "SDL.hpp"
-#include "Window.hpp"
-
 class BgfxWrapper
 {
 public:

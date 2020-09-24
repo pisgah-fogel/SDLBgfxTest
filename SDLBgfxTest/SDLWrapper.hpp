@@ -6,12 +6,12 @@
 
 // TODO : https://alexandre-laurent.developpez.com/tutoriels/sdl-2/les-evenements/
 
-class SDL
+class SDLWrapper
 {
 public:
 	static bool Init(unsigned int initFlags = SDL_INIT_EVERYTHING)
 	{
-		SDL& sdl = GetInstance();
+		SDLWrapper& sdl = GetInstance();
 
 		assert(!sdl.mInitialized);
 
@@ -36,7 +36,7 @@ public:
 
 	static bool Release()
 	{
-		SDL& sdl = GetInstance();
+		SDLWrapper& sdl = GetInstance();
 
 		assert(sdl.mInitialized);
 
@@ -67,20 +67,20 @@ public:
 	}
 
 private:
-	SDL()
+	SDLWrapper()
 		: mInitialized(false)
 		, mInitFlags(0)
 	{
 	}
 
-	~SDL()
+	~SDLWrapper()
 	{
 		assert(!mInitialized);
 	}
 
-	static SDL& GetInstance()
+	static SDLWrapper& GetInstance()
 	{
-		static SDL instance;
+		static SDLWrapper instance;
 		return instance;
 	}
 
