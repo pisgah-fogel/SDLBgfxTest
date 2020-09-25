@@ -19,19 +19,19 @@ struct PosColorTexVertex
     float texu;
     float texv;
 };
-
-static const struct PosColorTexVertex SpriteVertices[] =
+static const struct  PosColorVertex SpriteVertices[] =
+//static const struct PosColorTexVertex SpriteVertices[] =
     {
-        {-1.0f,  1.0f,  1.0f, 0xff000000, 0, 0},
-        { 1.0f,  1.0f,  1.0f, 0xff000000, 1, 0},
-        {-1.0f, -1.0f,  1.0f, 0xff000000, 0, 1},
-        { 1.0f, -1.0f,  1.0f, 0xff000000, 1, 1}
+    {-1.0f,  1.0f, -1.0f, 0xff0000ff },
+    { 1.0f,  1.0f, -1.0f, 0xff0000ff },
+    {-1.0f, -1.0f, -1.0f, 0xff0000ff },
+    { 1.0f, -1.0f, -1.0f, 0xff0000ff },
     };
 
 static const uint16_t SpriteTriList[] =
     {
-        0, 2, 1,
-        1, 2, 3
+    0, 2, 1,
+    1, 2, 3,
     };
 
 class Sprite
@@ -52,8 +52,8 @@ public:
 
             const float offset = 0.1f; // TODO: not sure
             const bool homogeneousNdc = bgfx::getCaps()->homogeneousDepth;
-            bx:mtxOrtho(proj, 0.0f, 800.f, 600.f, 0.0f, 1.0f, -1.0f, offset, homogeneousNdc, bx::Handness::Left);
-
+            //bx:mtxOrtho(proj, 0.0f, 800.f, 600.f, 0.0f, 1.0f, -1.0f, offset, homogeneousNdc, bx::Handness::Left);
+            bx::mtxProj(proj, 60.0f, 800.f/600.f, 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
             bgfx::setViewTransform(0, view, proj);
 
             // Rotate:
